@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "insiders")
-public class Insider {
+@Table(name = "mentors")
+public class Mentor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,19 +19,15 @@ public class Insider {
     private String fullName;
     private String phone;
 
-    // Insider = current college student
-    private String college;
-    private String course;
-    private String customCourse;   // filled when course == "Other"
-    private String year;
-
+    // Mentor = working professional
+    private String company;
+    private String designation;
+    private String areaOfExpertise;
     private String linkedInUrl;
+    private Integer yearsOfExperience;
 
     @Column(length = 500)
     private String bio;
-
-    private String upiId;
-    private String collegeIdNumber;
 
     @Column(length = 1000)
     private String adminSummary;
