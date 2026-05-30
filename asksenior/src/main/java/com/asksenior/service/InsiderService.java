@@ -9,14 +9,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class InsiderService {
 
     private final InsiderRepository repo;
+    private final UpiValidationService upiValidation;
 
-    public InsiderService(InsiderRepository repo) {
+    public InsiderService(InsiderRepository repo, UpiValidationService upiValidation) {
         this.repo = repo;
+        this.upiValidation = upiValidation;
     }
 
     public Insider auth(String email) {
@@ -46,11 +49,26 @@ public class InsiderService {
     }
 
     public void updatePayout(Long id, InsiderPayoutRequest req) {
+        // Validate UPI format before accepting
+        var result = upiValidation.validate(req.getUpiId());
+        if ("FAILED".equals(result.status())) {
+            throw new RuntimeException(result.message());
+        }
         Insider i = get(id);
         i.setUpiId(req.getUpiId());
+        i.setUpiVerificationStatus(result.status());
+        if ("VERIFIED".equals(result.status())) {
+            i.setUpiVerifiedAt(LocalDateTime.now());
+        }
         i.setCollegeIdNumber(req.getCollegeIdNumber());
         i.setAdminSummary(req.getAdminSummary());
         i.setRegisteredAt(LocalDateTime.now());
+        repo.save(i);
+    }
+
+    public void savePhoto(Long id, String path) {
+        Insider i = get(id);
+        i.setPhotoPath(path);
         repo.save(i);
     }
 
@@ -61,17 +79,14 @@ public class InsiderService {
     }
 
     public Insider get(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Insider not found with id " + id));
+        return repo.findById(id).orElseThrow(() -> new NotFoundException("Insider not found with id " + id));
     }
 
     public Page<Insider> search(String q, Pageable pageable) {
         if (q == null || q.isBlank()) return repo.findAll(pageable);
-        return repo.findByFullNameContainingIgnoreCaseOrCollegeContainingIgnoreCaseOrEmailContainingIgnoreCase(
-                q, q, q, pageable);
+        return repo.findByFullNameContainingIgnoreCaseOrCollegeContainingIgnoreCaseOrEmailContainingIgnoreCase(q, q, q, pageable);
     }
 
     public long count() { return repo.count(); }
-
-    public java.util.List<Insider> all() { return repo.findAll(); }
+    public List<Insider> all() { return repo.findAll(); }
 }

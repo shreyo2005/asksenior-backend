@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
     Optional<Mentor> findByEmail(String email);
+    Optional<Mentor> findByWorkEmail(String workEmail);
     Page<Mentor> findByFullNameContainingIgnoreCaseOrCompanyContainingIgnoreCaseOrEmailContainingIgnoreCase(
             String name, String company, String email, Pageable pageable);
 }

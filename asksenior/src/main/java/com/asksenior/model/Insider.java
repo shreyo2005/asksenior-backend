@@ -19,10 +19,9 @@ public class Insider {
     private String fullName;
     private String phone;
 
-    // Insider = current college student
     private String college;
     private String course;
-    private String customCourse;   // filled when course == "Other"
+    private String customCourse;
     private String year;
 
     private String linkedInUrl;
@@ -30,7 +29,15 @@ public class Insider {
     @Column(length = 500)
     private String bio;
 
+    // Profile photo
+    private String photoPath;
+
+    // UPI / payout
     private String upiId;
+    private String upiVerificationStatus;   // VERIFIED | PENDING | FAILED
+    private LocalDateTime upiVerifiedAt;
+    private String accountHolderName;
+
     private String collegeIdNumber;
 
     @Column(length = 1000)

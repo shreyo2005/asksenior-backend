@@ -15,9 +15,11 @@ import java.util.List;
 public class StudentService {
 
     private final StudentRepository repo;
+    private final UpiValidationService upiValidation;
 
-    public StudentService(StudentRepository repo) {
+    public StudentService(StudentRepository repo, UpiValidationService upiValidation) {
         this.repo = repo;
+        this.upiValidation = upiValidation;
     }
 
     public Student auth(String email) {
@@ -38,22 +40,38 @@ public class StudentService {
         s.setYear(req.getYear());
         s.setCity(req.getCity());
         s.setLinkedInUrl(req.getLinkedInUrl());
+        s.setCollegeEmail(req.getCollegeEmail()); // optional, may be null/blank
         s.setRegisteredAt(LocalDateTime.now());
         repo.save(s);
     }
 
+    public void savePhoto(Long id, String path) {
+        Student s = get(id);
+        s.setPhotoPath(path);
+        repo.save(s);
+    }
+
+    public UpiResponse verifyAndSaveUpi(Long id, String upiId) {
+        var result = upiValidation.validate(upiId);
+        Student s = get(id);
+        s.setUpiId(upiId);
+        s.setUpiVerificationStatus(result.status());
+        if ("VERIFIED".equals(result.status())) {
+            s.setUpiVerifiedAt(LocalDateTime.now());
+        }
+        repo.save(s);
+        return new UpiResponse(upiId, result.status(), s.getAccountHolderName(), result.message());
+    }
+
     public Student get(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Student not found with id " + id));
+        return repo.findById(id).orElseThrow(() -> new NotFoundException("Student not found with id " + id));
     }
 
     public Page<Student> search(String q, Pageable pageable) {
         if (q == null || q.isBlank()) return repo.findAll(pageable);
-        return repo.findByFullNameContainingIgnoreCaseOrCollegeContainingIgnoreCaseOrEmailContainingIgnoreCase(
-                q, q, q, pageable);
+        return repo.findByFullNameContainingIgnoreCaseOrCollegeContainingIgnoreCaseOrEmailContainingIgnoreCase(q, q, q, pageable);
     }
 
     public long count() { return repo.count(); }
-
     public List<Student> all() { return repo.findAll(); }
 }

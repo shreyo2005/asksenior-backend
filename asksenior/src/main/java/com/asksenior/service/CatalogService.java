@@ -20,7 +20,7 @@ public class CatalogService {
         this.courseRepo = courseRepo;
     }
 
-    // ---- Colleges ----
+    //returning all the colleges
     public List<College> allColleges() {
         return collegeRepo.findAll();
     }
@@ -41,12 +41,12 @@ public class CatalogService {
         return collegeRepo.save(c);
     }
 
-    // Validation helper — used by registration to prevent invalid college
+
     public boolean isValidCollege(String name) {
         return collegeRepo.existsByNameIgnoreCase(name);
     }
 
-    // ---- Courses ----
+  //for the courses ill need this
     public List<Course> allCourses() {
         return courseRepo.findAll();
     }

@@ -19,7 +19,6 @@ public class Mentor {
     private String fullName;
     private String phone;
 
-    // Mentor = working professional
     private String company;
     private String designation;
     private String areaOfExpertise;
@@ -28,6 +27,13 @@ public class Mentor {
 
     @Column(length = 500)
     private String bio;
+
+    // Work email — MANDATORY and UNIQUE for mentors
+    @Column(unique = true)
+    private String workEmail;
+
+    // Profile photo
+    private String photoPath;
 
     @Column(length = 1000)
     private String adminSummary;
