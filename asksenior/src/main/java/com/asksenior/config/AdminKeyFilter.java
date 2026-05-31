@@ -30,11 +30,12 @@ public class AdminKeyFilter implements Filter {
             return;
         }
 
-        // Protect admin stats + the GET list endpoints that expose personal data
+        // Protect admin stats + catalog addition + the GET endpoints that expose personal data (including specific IDs)
         boolean isProtected =
                 path.startsWith("/api/admin") ||
+                        ("POST".equals(method) && path.equals("/api/catalog/colleges")) ||
                         ("GET".equals(method) &&
-                                (path.equals("/api/insider") || path.equals("/api/mentor") || path.equals("/api/student")));
+                                (path.startsWith("/api/insider") || path.startsWith("/api/mentor") || path.startsWith("/api/student")));
 
         if (isProtected) {
             String provided = request.getHeader("X-Admin-Key");
