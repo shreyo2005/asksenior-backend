@@ -2,6 +2,7 @@ package com.asksenior.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -33,8 +34,14 @@ public class Dtos {
 
     @Data
     public static class InsiderProfileRequest {
-        @NotBlank private String fullName;
-        @NotBlank private String phone;
+        @NotBlank(message = "Full name is required")
+        private String fullName;
+
+        @NotBlank(message = "Phone number is required")
+        @Pattern(regexp = "^(\\+91)?[6-9][0-9]{9}$",
+                message = "Enter a valid 10-digit Indian mobile number")
+        private String phone;
+
         private String bio;
         private String linkedInUrl;
     }
@@ -49,18 +56,30 @@ public class Dtos {
     // ---- Mentor (professional) ----
     @Data
     public static class MentorProfileRequest {
-        @NotBlank private String fullName;
-        @NotBlank private String phone;
-        @NotBlank private String company;
-        @NotBlank private String designation;
+        @NotBlank(message = "Full name is required")
+        private String fullName;
 
-        // Work email is MANDATORY and must be a valid email
+        @NotBlank(message = "Phone number is required")
+        @Pattern(regexp = "^(\\+91)?[6-9][0-9]{9}$",
+                message = "Enter a valid 10-digit Indian mobile number")
+        private String phone;
+
+        @NotBlank(message = "Company is required")
+        private String company;
+
+        @NotBlank(message = "Designation is required")
+        private String designation;
+
         @NotBlank(message = "Work email is required")
         @Email(message = "Please provide a valid work email")
         private String workEmail;
 
-        private String areaOfExpertise;
+        @NotBlank(message = "LinkedIn profile is required")
+        @Pattern(regexp = ".*linkedin\\.com.*",
+                message = "Please provide a valid LinkedIn URL")
         private String linkedInUrl;
+
+        private String areaOfExpertise;
         private Integer yearsOfExperience;
         private String bio;
         private String adminSummary;
@@ -69,18 +88,28 @@ public class Dtos {
     // ---- Student (seeker) ----
     @Data
     public static class StudentProfileRequest {
-        @NotBlank private String fullName;
-        @NotBlank private String phone;
-        @NotBlank private String college;
-        @NotBlank private String course;
+        @NotBlank(message = "Full name is required")
+        private String fullName;
+
+        @NotBlank(message = "Phone number is required")
+        @Pattern(regexp = "^(\\+91)?[6-9][0-9]{9}$",
+                message = "Enter a valid 10-digit Indian mobile number")
+        private String phone;
+
+        @NotBlank(message = "College is required")
+        private String college;
+
+        @NotBlank(message = "Course is required")
+        private String course;
+
         private String customCourse;
         private String year;
         private String city;
-        private String linkedInUrl;
 
-        // College email is OPTIONAL — but if present, must be valid format
         @Email(message = "Please provide a valid college email")
         private String collegeEmail;
+
+        private String linkedInUrl;
     }
 
     // ---- UPI verification ----
@@ -93,8 +122,8 @@ public class Dtos {
     @AllArgsConstructor
     public static class UpiResponse {
         private String upiId;
-        private String status;            // VERIFIED | PENDING | FAILED
-        private String accountHolderName; // null in format-only mode
+        private String status;
+        private String accountHolderName;
         private String message;
     }
 
