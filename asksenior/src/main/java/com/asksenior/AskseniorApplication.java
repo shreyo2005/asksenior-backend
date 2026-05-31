@@ -10,4 +10,5 @@ public class AskseniorApplication {
 		SpringApplication.run(AskseniorApplication.class, args);
 	}
 
+
 }

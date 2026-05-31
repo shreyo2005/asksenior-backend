@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/profile")
-@CrossOrigin(origins = "*")
 public class ProfileController {
 
     private final FileStorageService fileStorage;
@@ -27,7 +26,6 @@ public class ProfileController {
         this.insiderService = insiderService;
     }
 
-    // POST /api/profile/upload-photo?role=student&id=1   (file from device gallery)
     @PostMapping("/upload-photo")
     public UploadResponse uploadPhoto(
             @RequestParam String role,
@@ -38,7 +36,6 @@ public class ProfileController {
         return new UploadResponse("Photo uploaded successfully", path);
     }
 
-    // POST /api/profile/upload-webcam-image?role=student&id=1  (webcam blob, same handling)
     @PostMapping("/upload-webcam-image")
     public UploadResponse uploadWebcam(
             @RequestParam String role,
@@ -49,11 +46,9 @@ public class ProfileController {
         return new UploadResponse("Webcam photo uploaded successfully", path);
     }
 
-    // POST /api/profile/verify-upi   body: { "upiId": "john@oksbi" }
     @PostMapping("/verify-upi")
     public UpiResponse verifyUpi(@Valid @RequestBody UpiRequest req) {
         var result = upiValidation.validate(req.getUpiId());
-        // accountHolderName is null in format-only mode (no paid provider connected)
         return new UpiResponse(req.getUpiId(), result.status(), null, result.message());
     }
 

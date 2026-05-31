@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/mentor")
-@CrossOrigin(origins = "*")
 public class MentorController {
 
     private final MentorService service;

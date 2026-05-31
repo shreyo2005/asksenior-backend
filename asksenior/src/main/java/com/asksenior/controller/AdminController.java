@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = "*")
 public class AdminController {
 
     private final InsiderService insiderService;
@@ -56,8 +55,8 @@ public class AdminController {
         return list.stream()
                 .map(key)
                 .filter(Objects::nonNull)
-                .filter(s -> !s.isBlank())
-                .collect(Collectors.groupingBy(s -> s, LinkedHashMap::new, Collectors.counting()));
+                .filter(v -> !v.isBlank())
+                .collect(Collectors.groupingBy(v -> v, LinkedHashMap::new, Collectors.counting()));
     }
 
     private <T> List<Map<String, String>> recent(
@@ -71,7 +70,7 @@ public class AdminController {
                 .limit(5)
                 .map(t -> {
                     Map<String, String> m = new LinkedHashMap<>();
-                    m.put("name", nameFn.apply(t) == null ? "—" : nameFn.apply(t));
+                    m.put("name", nameFn.apply(t) == null ? "-" : nameFn.apply(t));
                     m.put("email", emailFn.apply(t));
                     m.put("date", dateFn.apply(t).toString());
                     return m;

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/insider")
-@CrossOrigin(origins = "*")
 public class InsiderController {
 
     private final InsiderService service;
